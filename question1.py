@@ -19,21 +19,28 @@ def counter(tree: Node | None, value):
 
 # 1 b
 def digit_or_char_is_in_tree(tree: Node | None, value):
+    if tree is None:
+        return False
     if tree.value == value:
         return True
     return digit_or_char_is_in_tree(tree.left, value) or digit_or_char_is_in_tree(tree.right, value)
 
 
 def is_in_tree(tree: Node | None, value):
-    # return value in tree.values
-    num = False
-    if type(value) == 'int' or type(value) == 'float':
-        num = True
+    if tree is None:
+        return False
+    numberic =  type(value) == int or type(value) == float
     value = str(value)
     if len(value) == 1:
-        if num:
-            if value == '.':
+        if numberic:
+            if value[0] == '.' or value[0] == '-':
                 return True
-            value = int(value)
-        return digit_or_char_is_in_tree(tree, value)
-    return is_in_tree(tree, value[0]) or is_in_tree(tree, value[1::])
+            return digit_or_char_is_in_tree(tree, int(value[0]))
+        return digit_or_char_is_in_tree(tree, value[0])
+    if numberic:
+        return is_in_tree(tree, int(value[0])) and is_in_tree(tree, int(value[1::]))
+    return is_in_tree(tree, value[0]) and is_in_tree(tree, value[1::])
+
+if __name__ == '__main__':
+    tree = Node(4, Node(3), Node(2))
+    print(is_in_tree(tree, 32))
